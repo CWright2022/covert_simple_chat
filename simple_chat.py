@@ -34,7 +34,7 @@ def receive_messages():
                     print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
     sniff(
         iface=INTERFACE,
-        filter=f"udp port {CHAT_PORT} and ip src {PEER_IP}",
+        filter="icmp",
         prn=handle_packet,
         store=False,
     )
