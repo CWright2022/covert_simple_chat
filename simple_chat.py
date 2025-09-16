@@ -34,7 +34,7 @@ def receive_messages():
                     print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
     sniff(
         iface=INTERFACE,
-        filter="icmp",
+        filter=f"icmp[icmptype] = icmp-echo and src host {PEER_IP}",
         prn=handle_packet,
         store=False,
     )
