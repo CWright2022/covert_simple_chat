@@ -8,7 +8,7 @@ import time
 MY_IP = "192.168.80.129"   # Replace with your local IP
 PEER_IP = "192.168.80.130" # Replace with the peer's IP
 CHAT_PORT = 12345          # UDP port for chat
-INTERFACE = "ens33"        # Replace with your network interface (e.g., "wlan0", "en0")
+INTERFACE = "eth0"        # Replace with your network interface (e.g., "wlan0", "en0")
 
 # Function to send chat messages
 def send_messages():
@@ -27,17 +27,17 @@ def send_messages():
 # Function to receive chat messages
 def receive_messages():
     def handle_packet(pkt):
-    if UDP in pkt and pkt[UDP].dport == CHAT_PORT:
-        # Ignore our own outgoing packets
-        if pkt[IP].src == MY_IP:
-            return
-        if Raw in pkt:
-            msg = pkt[Raw].load.decode("utf-8", errors="ignore")
+        if UDP in pkt and pkt[UDP].dport == CHAT_PORT:
+            # Ignore our own outgoing packets
+            if pkt[IP].src == MY_IP:
+                return
+            if Raw in pkt:
+                msg = pkt[Raw].load.decode("utf-8", errors="ignore")
             print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
 
     sniff(
         iface=INTERFACE,
-        filter=f"ip.src == {PEER_IP} && udp port {CHAT_PORT}",
+        filter=f"udp port {CHAT_PORT}",
         prn=handle_packet,
         store=False,
     )
