@@ -5,10 +5,10 @@ import threading
 import time
 
 # Configuration
-MY_IP = "192.168.80.129"   # Replace with your local IP
-PEER_IP = "192.168.80.130" # Replace with the peer's IP
+MY_IP = "192.168.254.129"   # Replace with your local IP
+PEER_IP = "192.168.254.130" # Replace with the peer's IP
 CHAT_PORT = 12345          # UDP port for chat
-INTERFACE = "eth0"        # Replace with your network interface (e.g., "wlan0", "en0")
+INTERFACE = "ens33"        # Replace with your network interface (e.g., "wlan0", "en0")
 
 # Function to send chat messages
 def send_messages():
@@ -37,7 +37,7 @@ def receive_messages():
 
     sniff(
         iface=INTERFACE,
-        filter=f"udp port {CHAT_PORT}",
+        filter=f"udp port {CHAT_PORT} and ip src {PEER_IP}",
         prn=handle_packet,
         store=False,
     )
