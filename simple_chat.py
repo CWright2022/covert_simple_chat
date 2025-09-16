@@ -20,21 +20,18 @@ def send_messages():
         if message.lower() == "exit":
             print("Chat ended.")
             break
-        packet = IP(dst=PEER_IP) / UDP(sport=CHAT_PORT, dport=CHAT_PORT) / Raw(load=message)
+        packet = IP(dst=PEER_IP) / ICMP(type=8, code=0) / Raw(load=message)
         send(packet, iface=INTERFACE, verbose=False)
         time.sleep(0.1)
 
 # Function to receive chat messages
 def receive_messages():
     def handle_packet(pkt):
-        if UDP in pkt and pkt[UDP].dport == CHAT_PORT:
-            # Ignore our own outgoing packets
-            if pkt[IP].src == MY_IP:
-                return
-            if Raw in pkt:
-                msg = pkt[Raw].load.decode("utf-8", errors="ignore")
-            print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
-
+        if IP in pkt and ICMP in pkt and pkt[IP].src == PEER_IP:
+            if pkt[ICMP].type in [0, 8]:  # Echo Reply or Echo Request
+                if Raw in pkt:
+                    msg = pkt[Raw].load.decode("utf-8", errors="ignore")
+                    print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
     sniff(
         iface=INTERFACE,
         filter=f"udp port {CHAT_PORT} and ip src {PEER_IP}",
