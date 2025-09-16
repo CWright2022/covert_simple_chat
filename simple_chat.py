@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# simple_chat.py using UDP port
+# simple_chat.py using ICMP port
+# original code by Daryl Johnson, modified by Cayden Wright
 from scapy.all import *
 import threading
 import time
@@ -34,6 +35,7 @@ def receive_messages():
                     print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
     sniff(
         iface=INTERFACE,
+        # filter on icmp requests from PEER_IP
         filter=f"icmp[icmptype] = icmp-echo and src host {PEER_IP}",
         prn=handle_packet,
         store=False,
