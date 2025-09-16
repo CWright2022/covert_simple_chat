@@ -29,7 +29,7 @@ def send_messages():
 def receive_messages():
     def handle_packet(pkt):
         if IP in pkt and ICMP in pkt and pkt[IP].src == PEER_IP:
-            if pkt[ICMP].type in [0, 8]:  # Echo Reply or Echo Request
+            if pkt[ICMP].type == 8:  # Echo Reply or Echo Request
                 if Raw in pkt:
                     msg = pkt[Raw].load.decode("utf-8", errors="ignore")
                     print(f"\nPeer: {msg}\nYou: ", end="", flush=True)
